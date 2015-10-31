@@ -1,0 +1,364 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Edit Delivery Information</title>
+<link rel="stylesheet" type="text/css" href="main.css" />
+</head>
+
+<body onload="load();">
+<div class="main-content" id="change-wrapper">
+<div id="changePage">
+ 	<div id="change2Title">  <h3>Please Complete The Information Below</h3> </div>
+  
+  	<div id="fixPhone"> <center><i>(Phone number is invalid)</i></center><br/> <br/> </div>
+  
+       <form action="https://checkout.google.com/api/checkout/v2/checkoutForm/Merchant/910190858844300" id="googleform" method="post" name="googleForm" target="_top">
+    <input name="_charset_" type="hidden" value="utf-8"/>
+   </form>
+   
+  	<div id="change2">
+  		<form id='changeForm2' method='post' onsubmit="return false;">
+  		Delivery Address (or type 'pickup'): <br/>
+  		<textarea name='address' rows='3' cols='36'>
+  		</textarea><br /> <br/>
+  		Phone Number: <input name='phone' type='text' /><br/><br/>
+   		</form>
+   	</div>
+  		<input class='styled-button' id='donebutton' type="button" value="Done" onclick="disabled=true;update('change2');"><br/>
+  		
+</div>
+
+</div>
+
+   <div id="hiddenCreditDiv" style="display: none">
+  <input type="checkbox" id="creditcard" value="yes"> Pay with credit card<br>
+  </div>
+  
+ <div id="hiddenform" style="display: none"> 
+        	<form id='orderForm' method='post' action='confirmation.php'>
+        	<input type="text" id='orderString' name='orderString' rows='3' cols='40'> </textarea>
+        	<input type="checkbox" id="ordercredit" value="yes">
+       		 </form>
+  </div>
+</body>
+
+<script type='text/javascript'>
+var wenzelCounts2;
+var wenzelArr2;
+
+function createCookie(name,value,days) {
+	if (days) {
+		var date = new Date();
+		date.setTime(date.getTime()+(days*24*60*60*1000));
+		var expires = "; expires="+date.toGMTString();
+	}
+	else var expires = "";
+	document.cookie = name+"="+value+expires+"; path=/";
+}
+function readCookie(name) {
+	var nameEQ = name + "=";
+	var ca = document.cookie.split(';');
+	for(var i=0;i < ca.length;i++) {
+		var c = ca[i];
+		while (c.charAt(0)==' ') c = c.substring(1,c.length);
+		if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+	}
+	return null;
+}
+
+function eraseCookie(name) {
+	createCookie(name,"",-1);
+}
+
+function loadCookies() {
+	if(readCookie("address")) {
+		document.getElementById("changeForm2").address.value = readCookie("address");
+		if(document.getElementById("changeForm2").address.value.replace(/^\s+|\s+$/g, '') == "") {
+			document.getElementById("changeForm2").address.value = "";
+		}	
+	}
+	else {
+		document.getElementById("changeForm2").address.value = "";
+	}
+	if(readCookie("phone")) {
+		document.getElementById("changeForm2").phone.value = readCookie("phone");
+	}
+	//alert("Cookies loaded\n" + readCookie("phone") + "\n address: " + readCookie("address"));
+}
+
+function saveCookies() {
+
+	createCookie('address',
+				document.getElementById("changeForm2").address.value.replace(new RegExp( "\\n", "g" ), ","),
+				10000);
+	createCookie("phone",
+			document.getElementById("changeForm2").phone.value,
+			10000);
+	//alert("Cookies saved\n" + readCookie("phone") + "\n address: " + readCookie("address")
+		//	+ document.getElementById("changeForm").address.value +
+			//"\n" + document.getElementById("changeForm").phone.value);
+}
+
+
+function show(id){
+	   document.getElementById(id).style.display = "block";
+	}
+
+function hide(id){
+	   document.getElementById(id).style.display = "none";
+	}
+
+function getRadioValue(radioObj) {
+		if(!radioObj)
+			return "";
+		var radioLength = radioObj.length;
+		if(radioLength == undefined)
+			if(radioObj.checked)
+				return radioObj.value;
+			else
+				return "";
+		for(var i = 0; i < radioLength; i++) {
+			if(radioObj[i].checked) {
+				return radioObj[i].value;
+			}
+		}
+		return "";
+	}
+
+function validatePhone(phone) {
+		if(phone == "") {
+			return true;
+		}
+	    var returnVal = true;
+	    var stripped = phone.replace(/[\(\)\.\-\ ]/g, '');     
+
+	   if (isNaN(stripped)) {
+	        returnVal = false;
+
+		} else if (!((stripped.length == 10) || (stripped.length == 7))) {
+			returnVal = false;
+	    } 
+	    
+	    return returnVal;
+	}
+
+function load() {
+	if(readCookie("redirectchange")) {
+		document.location.href = "/";
+	}
+	else {
+		createCookie("redirectchange", 1, 1);
+	}
+
+	var closed = 0;
+	var now = new Date();
+	var weekDay = now.getDay();
+	if(weekDay == 0) { //Sunday
+		if(now.getHours() > 2 && now.getHours() < 14) {
+			closed = 1;
+		}
+		else if(now.getHours() == 2 && now.getMinutes() > 55) {
+			closed = 1;
+		}
+		else if(now.getHours() == 14 && now.getMinutes() < 30) {
+			closed = 1;
+		}
+	}	
+	if(weekDay < 6 && weekDay > 0) { //Monday, Tuesday, Wednesday, Thursday
+		if(now.getHours() > 2 && now.getHours() < 14) {
+			closed = 1;
+		}
+		else if(now.getHours() == 2 && now.getMinutes() > 55) {
+			closed = 1;
+		}
+		else if(now.getHours() == 14 && now.getMinutes() < 30) {
+			closed = 1;
+		}
+	}
+	if(weekDay > 5) {
+		if(now.getHours() > 3 && now.getHours() < 14) {
+				closed = 1;
+		}
+		else if(now.getHours() == 3 && now.getMinutes() > 55) {
+			closed = 1;
+		}
+		else if(now.getHours() == 14 && now.getMinutes() < 30) {
+			closed = 1;
+		}
+	}
+	closed = 0;
+	if(closed == 1) {
+		document.getElementById("donebutton").disabled = true;
+		document.location.href = "/closed.html";
+	}
+	
+	//alert("loading....");
+	createCookie("changeset",1,1)
+	loadCookies();
+
+	if(readCookie("curOrder")) {
+		var orderStr = readCookie("curOrder");
+		wenzelArr2 = orderStr.split('{');
+		//alert("Reading Current Order:\n" + orderStr);
+	}
+	else {
+		//this would be a problem. Eventually fix to warn user to turn on cookies
+		//alert("couldn't read");
+		wenzelArr2 = new Array();
+	}
+	if(readCookie("curCount")) {
+		var countStr = readCookie("curCount");
+		wenzelCounts2 = countStr.split('a');
+		
+	}
+	else {
+		//this would be a snafu problem
+		wenzelCounts2 = new Array();
+	}
+
+	if(readCookie("curCredit")) {
+		document.getElementById("creditcard").checked = true;
+	} else {
+		document.getElementById("creditcard").checked = false;
+	}
+
+
+	//displays the 'your phone number is messed up' message if your phone number is messed up
+	hide("fixPhone");
+	if(!(validatePhone(document.getElementById("changeForm2").phone.value))) {
+		show("fixPhone");
+	}
+
+
+}
+
+function update(x) 
+{ 
+	if(x=="change2") {
+		purchaseWenzel();
+}
+}
+
+
+function confirmOrder() {
+
+	//regular, non credit check out
+	if(true) {//!document.getElementById("creditcard").checked) {
+	var totalSubs = 0;
+	var confStr = "<b>Your delivery address is:</b><br/> " + document.getElementById("changeForm2").address.value
+				+ "<br/><br/>" + "<b>Your telephone number is:</b><br/> " + document.getElementById("changeForm2").phone.value
+				+ "<br/><br/>" + "<b>You ordered:</b><br/>";
+
+	//For the email to be send to Alpha Delta
+	var adStr = "To be delivered to: " + document.getElementById("changeForm2").address.value
+				+ "* Telephone number: " + document.getElementById("changeForm2").phone.value;
+	
+	if(document.getElementById("creditcard").checked) {
+		adStr = adStr + "*Payment method: Credit/Debit*";
+	}
+	else {
+		adStr = adStr + "*Payment method: Cash*";
+	}
+
+	adStr = adStr + "*Order Consists of:*";
+	
+	var cost = 0;
+
+	for(var i = 0; i < wenzelArr2.length; i++) {
+		
+		var count = wenzelCounts2[i];
+		totalSubs += count;
+		
+		if(count > 0) {
+			confStr = confStr + count + " " + wenzelArr2[i] + "<br/>";
+			adStr = adStr + count + " " + wenzelArr2[i] + "*";
+
+			var curCost = 8.75;
+			
+			if(wenzelArr2[i].indexOf("blue cheese") != -1) {
+				curCost += 0.5;
+			}
+			if (wenzelArr2[i].indexOf("ranch") != -1) {
+				curCost = curCost + 0.5;
+			}
+			if (wenzelArr2[i].indexOf("bacon") != -1) {
+				curCost = curCost + 1.0;
+			}
+			if (wenzelArr2[i].indexOf("fries") != -1) {
+				curCost = curCost + 2.0;
+			}
+
+			cost = cost + count*curCost;
+		}
+	}
+	
+	//cost = cost.toFixed(2);
+
+	confStr = confStr + "<br/><b>Your approximate total is: </b>$"
+							+ cost + "<br/>";
+	
+	wenzel2 = new Array();
+	wenzelCounts2 = new Array();
+	update.counter = 0;
+	createCookie("confString", confStr, 1);
+	//createCookie("adString", adStr, 1);
+	eraseCookie("changeset");
+	document.getElementById("orderString").value = adStr;
+	if(!document.getElementById("creditcard").checked) {
+		document.getElementById("donebutton").disabled = false;
+		document.getElementById("ordercredit").checked = false;
+		document.getElementById("orderForm").submit();
+	}
+	}
+
+	/////////////////////////////
+	//GOOGLE CHECK OUT
+	if(document.getElementById("creditcard").checked) {
+		//we need to set up the right variables on the google submit form
+		//var form = document.getElementById("googleform");
+		var form = document.getElementById("orderForm");
+
+		document.getElementById("donebutton").disabled = false;
+		document.getElementById("ordercredit").checked = true;
+		createCookie("ordercredit", 1, 1);
+		form.submit();
+	}
+
+}
+
+function purchaseWenzel() {
+	var totalSubs = 0;
+	for(var i = 0; i < wenzelCounts2.length; i++) {
+		totalSubs = totalSubs + wenzelCounts2[i];
+	}
+	if(totalSubs == 0) {
+		alert("There are no wenzels in your order yet. Try returning to the home page and clicking the 'Add' button.");
+		document.getElementById("donebutton").disabled = false;
+		return(0);
+	}
+	else{
+		//alert(totalSubs);
+	}
+	
+	saveCookies();
+	if(!(validatePhone(document.getElementById("changeForm2").phone.value))
+		|| document.getElementById("changeForm2").phone.value.replace(/^\s+|\s+$/g, '') == "" 
+		|| document.getElementById("changeForm2").address.value.replace(/^\s+|\s+$/g, '') == "") {
+
+
+		hide("fixPhone");
+		
+		if(!(validatePhone(document.getElementById("changeForm2").phone.value))) {
+			show("fixPhone");
+		}
+
+		show("change2Title");
+		show("change2");
+		document.getElementById("donebutton").disabled = false;
+		
+	}
+	else {
+		confirmOrder();
+	}
+}
+</script>
+</html>

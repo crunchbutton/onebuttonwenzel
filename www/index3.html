@@ -1,0 +1,794 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>One Button Wenzel</title>
+<link rel="stylesheet" type="text/css" href="main.css" />
+</head>
+
+<body onload="loadCookies();">
+<div class="main-content">
+<h2>One Button Wenzel</h2>
+	<div id="default">
+  		<div class="new-wenzel" id="0div">
+				<select id='0'>
+						<option value=0>0</option>
+            			<option value=1 selected>1</option>
+             			<option value=2>2</option>
+	     				<option value=3>3</option>
+						<option value=4>4</option>
+              			<option value=5>5</option>
+         				<option value=6>6</option>
+            			<option value=7>7</option>
+         				<option value=8>8</option>
+                		<option value=9>9</option>
+               			<option value=10>10</option>
+          				</select> 
+          			Wenzel(s) with: <i>standard toppings</i>&nbsp&nbsp
+          			<input class="remove-button" type="button" value="Remove" onclick="deleteWenzel(0);"></div>
+	</div>
+<div id="addButton"> 
+<br/>    	
+<input class='styled-button'type="button" value="Add Another Wenzel" onclick="update('add');">
+<input class='styled-button' type="button" value="Change Address/Phone" onclick="update('change');" />
+<br/> <br/>
+</div>
+
+<div id = "main-form">
+<div id="add" style="display: none">
+<form id='addForm' method='post' onsubmit="return false;">
+  Lettuce: yes <input type='radio' name='lettuce' value='yes' checked> 
+  			no <input type='radio' name='lettuce' value='no'> <br/>
+  Tomato: yes <input type='radio' name='tomato' value='yes' checked> 
+  			no <input type='radio' name='tomato' value='no'> <br/>
+  Cheese: yes <input type='radio' name='cheese' value='yes' checked> 
+  			no <input type='radio' name='cheese' value='no'> <br/>
+  Mayo: yes <input type='radio' name='mayo' value='yes' checked> 
+  			no <input type='radio' name='mayo' value='no'> <br/>
+  Garlic Bread: yes <input type='radio' name='garlic' value='yes'> 
+  			no <input type='radio' name='garlic' value='no' checked> <br/>
+  <!--Extra Sauce: yes <input type='radio' name='sauce' value='yes'> 
+  			no <input type='radio' name='sauce' value='no' checked> <br/> -->
+  Ranch ($0.50): yes <input type='radio' name='ranch' value='yes'> 
+  			no <input type='radio' name='ranch' value='no' checked> <br/>
+  Blue Cheese ($0.50): yes <input type='radio' name='bluecheese' value='yes'> 
+  			no <input type='radio' name='bluecheese' value='no' checked> <br/>
+  Bacon ($1.00): yes <input type='radio' name='bacon' value='yes'> 
+   			no <input type='radio' name='bacon' value='no' checked> <br/>
+  Eggplant, No Chicken: yes <input type='radio' name='eggplant' value='yes'> 
+			no <input type='radio' name='eggplant' value='no' checked> <br/>
+  Side of Fries ($2.00): yes <input type='radio' name='fries' value='yes'> 
+			no <input type='radio' name='fries' value='no' checked> <br/>
+  Extras or Sandwich Substitutions: <input type="text" name='extras' size=37></textarea><br />
+  <input class='styled-button' type="button" value="Add" onclick="update('addBack');">
+  <input class='styled-button' type="button" value="Cancel" onclick="update('addCancel');"><br/>
+  </form>
+  <br/>
+</div>
+
+<div id="change" style="display: none"> 
+  <form id='changeForm' method='post' onsubmit="return false;">
+  Delivery Address (or type 'pickup'): <br/>
+  <textarea name='address' rows='3' cols='36'>
+  </textarea><br />
+  Phone Number: <input name='phone' type='text' /><br/>
+  <input class='styled-button' type="button" value="Done" onclick="update('changeBack');"><br/>
+  </form>
+  <br/>
+</div>
+  
+  <div id="change2Title" style="display: none">  <h4>Please Complete Information Below</h4> </div>
+  
+  <div id="fixPhone" style="display: none"> <i>(Phone number is invalid)</i> <br/> <br/> </div>
+  
+  <div id="change2" style="display: none">
+  <form id='changeForm2' method='post' onsubmit="return false;">
+  Delivery Address (or pickup): <br/>
+  <textarea name='address' rows='3' cols='36'>
+  </textarea><br /> <br/>
+  Phone Number: <input name='phone' type='text' /><br/><br/>
+  <input class='styled-button' type="button" value="Done" onclick="update('change2');"><br/>
+  </form>
+  </div>
+  </div>
+  
+          <div id="hiddenform" style="display: none"> 
+        	<form id='orderForm' method='post' action='confirmation.php'>
+        	<input type="text" id='orderString' name='orderString' rows='3' cols='40'> </textarea>
+        	<input type="checkbox" id="ordercredit" value="yes">
+       		 </form>
+        </div>
+        
+    <!-- <form action="https://checkout.google.com/api/checkout/v2/checkoutForm/Merchant/910190858844300" id="googleform" method="post" name="googleForm" target="_top">
+    <input name="_charset_" type="hidden" value="utf-8"/>
+   </form> -->
+        
+   <div id="creditDiv">
+  <input type="checkbox" id="creditcard" value="yes" onclick="update('credit');"> Pay with credit card<br>
+  </div>
+  <div id="tipDiv" style="display:none">
+  Tip Amount:
+  	<select id='tipdrop'>
+  	<option value=0>0%</option>
+	<option value=10>15%</option>
+    <option value=20 selected>20%</option>
+    <option value=25>25%</option>
+    </select> 
+  </div>
+  
+ <!--<div id="pickupDiv">
+  <input type="checkbox" id="pickup" value="yes"> Pickup (no delivery)<br>
+  </div>-->
+  <div id="defaultOrder">
+  <input type="checkbox" id="makedefault" value="yes"> Make this your default order<br>
+  </div>
+  
+  <div id="buyButton">
+  <button class='punch' type="button" id="donebutton" value="Order Your Wenzel(s)" onclick="disabled=true;update('buy');">WENZEL ME</button><br/>
+   </div>
+   
+   <div id="addressPhone">
+   </div>
+   
+<div id="confirmation" style="display: none">
+<h4>Thank you for your purchase!</h4>
+</div>
+
+<div id='warning'>
+</div>
+<br>
+<br>If you're having a problem ordering, please tell us about it on our <a href="about.php">suggestions</a> page. We're new, and we don't think there are any glitches now, but, if you find one, let us know and we will fix it asap! 
+   
+<script type="text/javascript">
+
+var wenzelArr;
+var wenzelCounts;
+
+function createCookie(name,value,days) {
+	if (days) {
+		var date = new Date();
+		date.setTime(date.getTime()+(days*24*60*60*1000));
+		var expires = "; expires="+date.toGMTString();
+	}
+	else var expires = "";
+	document.cookie = name+"="+value+expires+"; path=/";
+}
+
+function readCookie(name) {
+	var nameEQ = name + "=";
+	var ca = document.cookie.split(';');
+	for(var i=0;i < ca.length;i++) {
+		var c = ca[i];
+		while (c.charAt(0)==' ') c = c.substring(1,c.length);
+		if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+	}
+	return null;
+}
+
+function eraseCookie(name) {
+	createCookie(name,"",-1);
+}
+
+function loadCookies() {
+
+	//erase random crap
+	eraseCookie("tipAmount");
+	eraseCookie("ordercredit");
+	eraseCookie("confString");
+	eraseCookie("redirect");
+	eraseCookie("redirectchange");
+		}
+	if(readCookie("address")) {
+		document.getElementById("changeForm").address.value = readCookie("address");
+	}
+	if(readCookie("phone")) {
+		document.getElementById("changeForm").phone.value = readCookie("phone");
+	}
+
+	//this means that they have just been on the change address page. So we should reload the order they had already entered
+	if(readCookie("changeset")) { // readCookie("googleset")) {
+		if(readCookie("curOrder")) {
+			var orderStr = readCookie("curOrder");
+			wenzelArr = orderStr.split('{');
+		}
+		else {
+			wenzelArr = new Array();
+		}
+		if(readCookie("curCount")) {
+			var countStr = readCookie("curCount");
+			wenzelCounts = countStr.split('a');
+		}	
+		else {
+			wenzelCounts = new Array();
+		}
+		if(readCookie("curCredit")) {
+			document.getElementById("creditcard").checked = true;
+		} else {
+			document.getElementById("creditcard").checked = false;
+		}
+		
+		/*if(readCookie("pickupCur")) {
+			document.getElementById("pickup").checked = true;
+		} else {
+			document.getElementById("pickup").checked = false;
+		}*/
+	}	
+
+	//they are arriving at the page fresh. check for them already having a default order
+	else {	
+		if(readCookie("orderArray")) {
+			var orderStr = readCookie("orderArray");
+			wenzelArr = orderStr.split('{');
+		}
+		//completely fresh order
+		else {
+			wenzelArr = new Array();
+		}
+		if(readCookie("countArray")) {
+			var countStr = readCookie("countArray");
+			wenzelCounts = countStr.split('a');		
+		}
+		//completely freshorder
+		else {
+			wenzelCounts = new Array();
+		}
+		if(readCookie("credit")) {
+			document.getElementById("creditcard").checked = true;
+			show("tipDiv");
+		} else {
+			document.getElementById("creditcard").checked = false;
+			hide("tipDiv");
+		}
+
+		/*if(readCookie("pickup")) {
+			document.getElementById("pickup").checked = true;
+		} else {
+			document.getElementById("pickup").checked = false;
+		}*/
+	}
+	//displayOrder(wenzelCounts, wenzelArr);
+
+	//loadCounts();
+	//alert("Cookies loaded \n" + wenzelArr.toString() + "\n " + wenzelCounts.toString());
+	
+	//this update should display the order - whether it is a cur order , a default order, or a freshorder
+	
+	update("noaction");
+	}
+
+function saveCookies() {
+	createCookie('address',
+				document.getElementById("changeForm").address.value,
+				10000);
+	createCookie("phone",
+			document.getElementById("changeForm").phone.value,
+			10000);
+	//alert("Cookies saved\n" + readCookie("phone") + "\n address: " + readCookie("address")
+		//	+ document.getElementById("changeForm").address.value +
+			//"\n" + document.getElementById("changeForm").phone.value);
+}
+
+function saveOrder() {
+	var orderStr = "";
+	var countStr = "";
+	for(var i = 0; i < wenzelArr.length; i++) {
+		if(wenzelCounts[i] > 0) {
+			countStr = countStr + wenzelCounts[i] + "a";
+			orderStr = orderStr + wenzelArr[i] + "{";
+		}
+
+	}
+	//createCookie('divText', document.getElementById("default").innerHTML, 10000);
+	createCookie('orderArray', orderStr.substr(0, orderStr.length-1), 10000);
+	createCookie('countArray', countStr.substr(0, countStr.length-1), 10000);
+
+	if(document.getElementById("creditcard").checked) {
+		createCookie('credit', document.getElementById("creditcard").checked, 10000);
+	} else {
+		eraseCookie('credit');
+	}
+
+	/*if(document.getElementById("pickup").checked) {
+		createCookie('pickup', document.getElementById("pickup").checked, 10000);
+	} else{
+		eraseCookie('pickup');
+	}*/
+}
+
+function saveCurOrder() {
+	//alert("saving current order");
+	var orderStr = "";
+	var countStr = "";
+	for(var i = 0; i < wenzelArr.length; i++) {
+		if(wenzelCounts[i] > 0) {
+			countStr = countStr + wenzelCounts[i] + "a";
+			orderStr = orderStr + wenzelArr[i] + "{";
+		}
+
+	}
+	//createCookie('divText', document.getElementById("default").innerHTML, 10000);
+	createCookie('curOrder', orderStr.substr(0, orderStr.length-1), 10000);
+	createCookie('curCount', countStr.substr(0, countStr.length-1), 10000);
+
+	if(document.getElementById("creditcard").checked) {
+		createCookie('curCredit', document.getElementById("creditcard").checked, 10000);
+	} else{
+		eraseCookie('curCredit');
+	}
+
+	/*if(document.getElementById("pickup").checked) {
+		createCookie('pickupCur', document.getElementById("pickup").checked, 10000);
+	} else{
+		eraseCookie('pickupCur');
+	}*/
+}
+
+function displayOrder(countArr, orderArr) {
+	var html = "";
+	var flag = 0;
+	for(var i = 0; i < countArr.length; i++) {
+
+			html = html + 
+			"<div class=\"new-wenzel\" id=\"" + i + "div\">";
+			
+			if(flag == 1) {
+				html = html + "+";
+			}
+			if(countArr[i] > 0) { 
+				flag = 1;
+			}
+			html = html + "<select id='" + i + "'>\
+				<option value=0>0</option>\
+				<option value=1 selected>1</option>\
+				<option value=2>2</option>\
+				<option value=3>3</option>\
+				<option value=4>4</option>\
+				<option value=5>5</option>\
+				<option value=6>6</option>\
+				<option value=7>7</option>\
+				<option value=8>8</option>\
+				<option value=9>9</option>\
+				<option value=10>10</option>\
+			</select> " +
+			orderArr[i] + "&nbsp&nbsp\
+			<input class=\"remove-button\" type=\"button\" value=\"Remove\" onclick=\"deleteWenzel(" + i + ");\"></div>";
+	}
+	document.getElementById("default").innerHTML = html;
+	for(var i = 0; i < countArr.length; i++) {
+		if(countArr[i]==0) {
+			//alert("hiding deleted wenzel");
+			hide(i+"div");
+		}
+	}
+	
+	loadCounts();
+	
+}
+
+	function show(id){
+	   document.getElementById(id).style.display = "block";
+	}
+
+	function hide(id){
+	   document.getElementById(id).style.display = "none";
+	}
+
+	function getRadioValue(radioObj) {
+		if(!radioObj)
+			return "";
+		var radioLength = radioObj.length;
+		if(radioLength == undefined)
+			if(radioObj.checked)
+				return radioObj.value;
+			else
+				return "";
+		for(var i = 0; i < radioLength; i++) {
+			if(radioObj[i].checked) {
+				return radioObj[i].value;
+			}
+		}
+		return "";
+	}
+
+	function validatePhone(phone) {
+		if(phone == "") {
+			return true;
+		}
+	    var returnVal = true;
+	    var stripped = phone.replace(/[\(\)\.\-\ ]/g, '');     
+
+	   if (isNaN(stripped)) {
+	        returnVal = false;
+
+		} else if (!((stripped.length == 10) || (stripped.length == 7))) {
+			returnVal = false;
+	    } 
+	    
+	    return returnVal;
+	}
+	
+	function update(x) 
+	{ 
+		if((validatePhone(document.getElementById("changeForm").phone.value))
+				&& document.getElementById("changeForm").phone.value.replace(/^\s+|\s+$/g, '') != "" 
+				&& document.getElementById("changeForm").address.value.replace(/^\s+|\s+$/g, '') != "") {
+			
+				document.getElementById("addressPhone").innerHTML =
+			"<br/><b>Your Wenzel(s) will be delivered to: </b><br/><i>" + 
+				document.getElementById("changeForm").address.value +
+				"</i><br/><br/>" +
+				"<b>Your phone number is: </b><i>" +
+				document.getElementById("changeForm").phone.value +
+				"</i>";
+		}
+		else {
+			document.getElementById("addressPhone").innerHTML = "";
+		}
+		
+		if(x=="noaction") {
+			//make sure tip is shown properly
+			if(document.getElementById("creditcard").checked == true) {
+				show("tipDiv");
+			} else {
+				hide("tipDiv");
+			}
+			
+			
+			if (wenzelArr.length == 0) {
+				//will hold all the wenzel types we have
+				wenzelArr[0] = "Wenzel(s) with: <i>standard toppings</i>";
+				wenzelCounts[0] = 1;
+			}
+			displayOrder(wenzelCounts, wenzelArr);
+			loadCounts();
+			
+			//save the order we just loaded or didn't load: this is an attempt to fix the $0 error on first website run
+			saveCurOrder();
+			
+			//alert(readCookie("curOrder") + readCookie("curCount") + readCookie("curCredit"));
+			
+		}
+		if(x=="credit") {
+			if(!document.getElementById("creditcard").checked) {
+				hide("tipDiv");
+			} else {
+				show("tipDiv");
+			}
+		}
+		if(x=="change") {
+			show("change");
+		}
+		if(x=="changeBack") {
+			saveCookies();
+			hide("change");
+		}
+		if(x=="add") {
+			show("add");
+			
+		}
+		if(x=="addCancel") {
+			hide("add");
+			document.getElementById("addForm").reset();
+		}
+		
+		if(x=="addBack") {
+			
+			var toppingsStr = "";
+			var i = 0;
+			var form = document.getElementById("addForm");
+
+			if(getRadioValue(form.garlic) == "yes") {
+				toppingsStr = toppingsStr + "garlic bread";
+				i = 1;
+			}
+			if(getRadioValue(form.eggplant) == "yes") {
+				if(i == 1) {
+					toppingsStr = toppingsStr + ", ";
+				}
+				toppingsStr = toppingsStr + "eggplant, no chicken";
+				i = 1;
+			}
+			if(getRadioValue(form.bacon) == "yes") {
+				if(i == 1) {
+					toppingsStr = toppingsStr + ", ";
+				}
+				toppingsStr = toppingsStr + "bacon";
+				i = 1;
+			}
+			if(getRadioValue(form.ranch) == "yes") {
+				if(i == 1) {
+					toppingsStr = toppingsStr + ", ";
+				}
+				toppingsStr = toppingsStr + "ranch";
+				i = 1;
+			}
+			if(getRadioValue(form.bluecheese) == "yes") {
+				if(i == 1) {
+					toppingsStr = toppingsStr + ", ";
+				}
+				toppingsStr = toppingsStr + "blue cheese";
+				i = 1;
+			}
+			
+			if(getRadioValue(form.lettuce) == "no") {
+				if(i == 1) {
+					toppingsStr = toppingsStr + ", ";
+				}
+				toppingsStr = toppingsStr + "no lettuce";
+				i = 1;
+			}
+			if(getRadioValue(form.tomato) == "no") {
+				if(i == 1) {
+					toppingsStr = toppingsStr + ", ";
+				}
+				toppingsStr = toppingsStr + "no tomatoes";
+				i = 1;
+			}
+			if(getRadioValue(form.cheese) == "no") {
+				if(i == 1) {
+					toppingsStr = toppingsStr + ", ";
+				}
+				toppingsStr = toppingsStr + "no cheese";
+				i = 1;
+			}
+			if(getRadioValue(form.mayo) == "no") {
+				if(i == 1) {
+					toppingsStr = toppingsStr + ", ";
+				}
+				toppingsStr = toppingsStr + "no mayo";
+				i = 1;
+			}
+			if(getRadioValue(form.fries) == "yes") {
+				if(i == 1) {
+					toppingsStr = toppingsStr + ", ";
+				}
+				toppingsStr = toppingsStr + "side of fries";
+				i = 1;
+			}
+			if(form.extras.value != "") {
+				if(i == 1) {
+					toppingsStr = toppingsStr + ", ";
+				}
+				toppingsStr = toppingsStr + "extras: " + form.extras.value;
+				i = 1;
+			}
+			if(i==0) {
+				toppingsStr = toppingsStr + "standard toppings";
+			}
+			
+			saveCounts();
+			
+			/*document.getElementById("default").innerHTML = 
+				document.getElementById("default").innerHTML +
+				"<div class=\"new-wenzel\" id=\"" + wenzelArr.length + "div\">" +
+				" + <select id=\"" + wenzelArr.length + "\"> \
+						<option value=0>0</option>\
+            			<option value=1 selected>1</option>\
+             			<option value=2>2</option>\
+	     				<option value=3>3</option>\
+						<option value=4>4</option>\
+              			<option value=5>5</option>\
+         				<option value=6>6</option>\
+            			<option value=7>7</option>\
+         				<option value=8>8</option>\
+                		<option value=9>9</option>\
+               			<option value=10>10</option>\
+          				</select> \
+          			Wenzel(s) with: <i>" + toppingsStr +  "</i>&nbsp&nbsp" +
+          			"<input class=\"remove-button\" type=\"button\" value=\"Remove\" onclick=\"deleteWenzel(" +
+          			wenzelArr.length + ");\"></div>";*/
+          			
+
+    		//update the wenzel array
+    		wenzelArr[wenzelArr.length] = "Wenzel(s) with: <i>" + toppingsStr + "</i>";
+			wenzelCounts[wenzelCounts.length] = 1;
+			displayOrder(wenzelCounts, wenzelArr);
+			loadCounts();
+    		
+            hide("add");
+           // alert("cleared add:");
+            document.getElementById("addForm").reset();
+		}
+		
+		if(x=="buy") {
+			
+			//Not neccesary now that we have a separate 'change address/phone' page
+			//document.getElementById("changeForm2").phone.value = 
+			//	document.getElementById("changeForm").phone.value;
+			//document.getElementById("changeForm2").address.value =
+				//document.getElementById("changeForm").address.value;
+			
+			purchaseWenzel();
+		}
+
+		//should also be antequated
+		/* if(x=="change2") {
+				document.getElementById("changeForm").phone.value = 
+					document.getElementById("changeForm2").phone.value;
+				document.getElementById("changeForm").address.value =
+					document.getElementById("changeForm2").address.value;
+
+				purchaseWenzel();
+		}*/
+	}
+
+	function confirmOrder() {
+
+		//regular, non credit check out
+		if(true) {//!document.getElementById("creditcard").checked) {
+		var totalSubs = 0;
+		var confStr = "<b>Your delivery address is:</b><br/> " + document.getElementById("changeForm").address.value
+					+ "<br/><br/>" + "<b>Your telephone number is:</b><br/> " + document.getElementById("changeForm").phone.value
+					+ "<br/><br/>" + "<b>You ordered:</b><br/>";
+
+		//For the email to be send to Alpha Delta
+		var adStr = "To be delivered to: " + document.getElementById("changeForm").address.value
+					+ "* Telephone number: " + document.getElementById("changeForm").phone.value;
+		
+		if(document.getElementById("creditcard").checked) {
+			adStr = adStr + "*Payment method: Credit/Debit*";
+		}
+		else {
+			adStr = adStr + "*Payment method: Cash*";
+		}
+
+		adStr = adStr + "*Order Consists of:*";
+		
+		var cost = 0;
+
+		for(var i = 0; i < wenzelArr.length; i++) {
+			var menu = document.getElementById(i);
+			var count = menu.selectedIndex;
+			//totalSubs += parseFloat(count);
+			totalSubs += count;
+			
+			if(count > 0) {
+				confStr = confStr + count + " " + wenzelArr[i] + "<br/>";
+				adStr = adStr + count + " " + wenzelArr[i] + "*";
+
+				//get proper cost
+				var curCost = 8.75;
+				
+				if(wenzelArr[i].indexOf("blue cheese") != -1) {
+					curCost += 0.5;
+				}
+				if (wenzelArr[i].indexOf("ranch") != -1) {
+					curCost = curCost + 0.5;
+				}
+				if (wenzelArr[i].indexOf("bacon") != -1) {
+					curCost = curCost + 1.0;
+				}
+				if (wenzelArr[i].indexOf("fries") != -1) {
+					curCost = curCost + 2.0;
+				}
+				
+				cost = cost + count*curCost;
+
+			}
+		}
+		
+		//cost = cost.toFixed(2);
+
+		confStr = confStr + "<br/><b>Your approximate total is: </b>$"
+								+ cost + "<br/>";
+		
+		//wenzelArr = new Array();
+		//wenzelCounts = new Array();
+		update.counter = 0;
+		createCookie("confString", confStr, 1);
+		//createCookie("adString", adStr, 1);
+		eraseCookie("changeset");
+		document.getElementById("orderString").value = adStr;
+		if(!document.getElementById("creditcard").checked) {
+			document.getElementById("donebutton").disabled = false;
+			document.getElementById("ordercredit").checked = false;
+			document.getElementById("orderForm").submit();
+		}
+		}
+
+		/////////////////////////////
+		//GOOGLE CHECK OUT
+		if(document.getElementById("creditcard").checked) {
+			//we need to set up the right variables on the google submit form
+			//var form = document.getElementById("googleform");
+			var form = document.getElementById("orderForm");
+			
+			
+			document.getElementById("donebutton").disabled = false;
+			document.getElementById("ordercredit").checked = true;
+			createCookie("ordercredit", 1, 1);
+			form.submit();
+		}
+
+}
+
+	//invoked when you actually hit the 'buy' button
+	function purchaseWenzel() {
+		
+		saveCounts();
+		saveCurOrder();
+		
+		var totalSubs = 0;
+		for(var i = 0; i < wenzelCounts.length; i++) {
+			totalSubs = totalSubs + wenzelCounts[i];
+		}
+		if(totalSubs == 0) {
+			alert("There are no wenzels in your order yet. (Try clicking the 'Add' button)");
+			document.getElementById("donebutton").disabled = false;
+			return(0);
+		}
+		
+		saveCounts();
+		saveCookies();
+		
+		var tipAmount = document.getElementById("tipdrop").selectedIndex;
+		if(tipAmount==0) {
+			tipAmount=0;
+		}
+		if(tipAmount==1) {
+			tipAmount=15;
+		}
+		if(tipAmount==2) {
+			tipAmount=20;
+		}
+		if(tipAmount==3) {
+			tipAmount=25;
+		}
+		//alert(tipAmount);
+		createCookie("tipamount",tipAmount,1);
+		
+		if(document.getElementById("makedefault").checked) {
+			saveOrder();
+			if(document.getElementById("creditcard").checked) {
+				//alert("about to save order " + wenzelCounts.toString());
+				createCookie("credit", true, 1); 
+			}
+		}
+		
+		//if they need to go to the change phone page
+		if(!(validatePhone(document.getElementById("changeForm").phone.value))
+			|| document.getElementById("changeForm").phone.value.replace(/^\s+|\s+$/g, '') == "" 
+			|| document.getElementById("changeForm").address.value.replace(/^\s+|\s+$/g, '') == "") {
+
+			//document.location.href = "http://onebuttonwenzel.com/change.html";
+			document.getElementById("donebutton").disabled = false;
+			document.location.href = document.location.href + "change.html";
+			
+		}
+		else {
+			confirmOrder();
+		}
+	}
+
+	function deleteWenzel(i) {
+		//hide(i+"div");
+		
+		if(document.getElementById(i)) {
+			document.getElementById(i).selectedIndex = 0;
+			//alert(i+"div");
+		}
+		saveCounts();
+		displayOrder(wenzelCounts, wenzelArr);
+		//alert(document.getElementById(i).value);
+	}
+
+	function saveCounts() {
+		for(var i = 0; i < wenzelCounts.length; i++) {
+			if(document.getElementById(i)) {
+				wenzelCounts[i] = document.getElementById(i).selectedIndex;
+			}
+		}
+	}
+	function loadCounts() {
+		for(var i =0; i < wenzelCounts.length; i++) {
+			if(document.getElementById(i)) {
+				document.getElementById(i).selectedIndex= wenzelCounts[i];
+			}
+		}
+	}
+</script> 
+</div>
+</div>
+</body>
+</html>
